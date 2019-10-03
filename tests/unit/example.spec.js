@@ -83,7 +83,7 @@ describe('tShirtConfig', () => {
 describe('orderForm', () => {
   test('skicka order', () => {
     const wrapper = mount(orderForm)             // orderForm test
-    let expectedData = {
+    let expectedOrderData = {
       firstName: "Ben",
       lastName: "Bensson",
       address: "Bengatan",
@@ -92,20 +92,20 @@ describe('orderForm', () => {
         storlek: "L",
         text: "hero",
         material: "bomull",
-        pris: "200"
+        pris: 100 + 50 + 50
       }
     }
-    wrapper.vm.setFirstName(expectedData.firstName)
-    wrapper.vm.setLastName(expectedData.lastName)
-    wrapper.vm.setAddress(expectedData.address)
-    wrapper.vm.setMail(expectedData.email)
+    wrapper.vm.setFirstName(expectedOrderData.firstName)
+    wrapper.vm.setLastName(expectedOrderData.lastName)
+    wrapper.vm.setAddress(expectedOrderData.address)
+    wrapper.vm.setMail(expectedOrderData.email)
     wrapper.vm.tshirt.addSize('L')
     wrapper.vm.tshirt.addText('Sudo')
     wrapper.vm.tshirt.selectMaterial('bomull')
     wrapper.vm.tshirt.addSize('L')
     wrapper.vm.tshirt.showPrice('200')
 
-    expect(wrapper.vm.orderData).toMatchObject(expectedData)  // orderData objekt i orderForm
+    expect(wrapper.vm.orderData).toEqual(expectedOrderData)  // orderData objekt i orderForm
   })
 })
 describe('buyForm', () => {
@@ -114,7 +114,11 @@ describe('buyForm', () => {
     let paymentMethod = {card, invoice}
 
     wrapper.vm.addPaymentMethod('card')
+    expect(wrapper.vm.buyForm.paymentMethod).toEqual(paymentMethod.card)  // orderData objekt i orderForm
 
-    expect(wrapper.vm.buyForm).toEqual(paymentMethod.card)  // orderData objekt i orderForm
+    wrapper.vm.addPaymentMethod('invoice')
+    expect(wrapper.vm.buyForm.paymentMethod).toEqual(paymentMethod.invoice)
+
+    wrapper.vm.addPayment(buyForm)
   })
 })
