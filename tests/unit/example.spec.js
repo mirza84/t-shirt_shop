@@ -18,7 +18,7 @@ describe('tShirtConfig', () => {
     wrapper.vm.addSize('L')
     expect(wrapper.vm.tshirt.size).toEqual('L')
   })
-  test('val av färg', () => {
+  test('val av färg på t-shirt', () => {
     const wrapper = mount(tShirtConfig)
     wrapper.vm.addColor('green')
     expect(wrapper.vm.tshirt.color).toEqual('green')
@@ -27,6 +27,16 @@ describe('tShirtConfig', () => {
     const wrapper = mount(tShirtConfig)
     wrapper.vm.addText('Sudo')
     expect(wrapper.vm.tshirt.text).toEqual('Sudo')
+  })
+  test('textstorlek på t-shirt', () => {
+    const wrapper = mount(tShirtConfig)
+    wrapper.vm.addTextSize('14')
+    expect(wrapper.vm.tshirt.text.size).toEqual('14')
+  })
+  test('textfärg på t-shirt', () => {
+    const wrapper = mount(tShirtConfig)
+    wrapper.vm.addTextColor('red')
+    expect(wrapper.vm.tshirt.text.color).toEqual('red')
   })
   test('teckenstil', () => {
     const wrapper = mount(tShirtConfig)
@@ -44,36 +54,67 @@ describe('tShirtConfig', () => {
     wrapper.vm.addItem('T-shirt')
     expect(wrapper.vm.tshirt.count).toEqual(oldCount + 1)
   })
-  test('ladda upp bild', () => {
+  test('ladda upp bild', async () => {
     const wrapper = mount(tShirtConfig)
-    var picture = wrapper.vm.tshirt.picture   // eller wrapper.vm.picture  ????????
-    wrapper.vm.addPicture('mypicture')
-    expect(wrapper.vm.tshirt.picture).not.toMatchObject(picture)  // ??????????
+    var picture = wrapper.vm.tshirt.picture
+    await wrapper.vm.addPicture('mypicture')      // lägga till await (async) 
+    expect(wrapper.vm.tshirt.picture).not.toMatchObject(picture)
   })
   test('val av material', () => {
     const wrapper = mount(tShirtConfig)
-    wrapper.vm.material('bomull')
+    wrapper.vm.selectMaterial('bomull')
     expect(wrapper.vm.tshirt.material).toEqual('bomull')
   })
   test('visa priset', () => {
     const wrapper = mount(tShirtConfig)
     var stdPrice = wrapper.vm.tshirt.price
     var newPrice = 0
-    if (wrapper.vm.tshirt.text > 0){      // kräver att man kör testet "text på t-shirt" innan!!
+    if (wrapper.vm.tshirt.text > 0) {      // kräver att man kör testet "text på t-shirt" innan!!
       newPrice = stdPrice + 50            // 50kr för texten
-    }else(newPrice = stdPrice)
-    
-    if(wrapper.vm.tshirt.material = 'bomull'){
+    } else (newPrice = stdPrice)
+
+    if (wrapper.vm.tshirt.material = 'bomull') {
       newPrice = newPrice + 50            // 50kr för bomull. Polyester standard pris
     }
     wrapper.vm.showPrice(newPrice)
     expect(wrapper.vm.tshirt.price).toEqual(newPrice)
   })
+})
+describe('orderForm', () => {
   test('skicka order', () => {
-    const wrapper = mount(tShirtConfig)             // ?????????????????????
-    wrapper.vm.sendOrder(wrapper.vm.tshirt)
-    
-    const wrapper = mount(orderForm)
-    expect(wrapper.text()).toMatch('Order')   // Komponent Order med rubriken 'Order'
+    const wrapper = mount(orderForm)             // orderForm test
+    let expectedData = {
+      firstName: "Ben",
+      lastName: "Bensson",
+      address: "Bengatan",
+      email: "ben@mail.com",
+      tshirt: {
+        storlek: "L",
+        text: "hero",
+        material: "bomull",
+        pris: "200"
+      }
+    }
+    wrapper.vm.setFirstName(expectedData.firstName)
+    wrapper.vm.setLastName(expectedData.lastName)
+    wrapper.vm.setAddress(expectedData.address)
+    wrapper.vm.setMail(expectedData.email)
+    wrapper.vm.tshirt.addSize('L')
+    wrapper.vm.tshirt.addText('Sudo')
+    wrapper.vm.tshirt.selectMaterial('bomull')
+    wrapper.vm.tshirt.addSize('L')
+    wrapper.vm.tshirt.showPrice('200')
+
+    expect(wrapper.vm.orderData).toMatchObject(expectedData)  // orderData objekt i orderForm
+  })
+})
+describe('buyForm', () => {
+  test('betala order', () => {
+    const wrapper = mount(buyForm)             // buyForm test
+    let paymentMethod = {card, invoice}
+
+    wrapper.vm.addPaymentMethod('card')
+
+    expect(wrapper.vm.buyForm).toEqual(paymentMethod.card)  // orderData objekt i orderForm
   })
 })
