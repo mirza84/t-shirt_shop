@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils'
 import App from '@/App.vue'
 import tShirtConfig from '@/components/tShirtConfig.vue'
 import orderForm from '@/components/orderForm.vue'
+import { wrap } from 'module'
 //import buyForm from '@/components/buyForm.vue'
 
 describe('App', () => {
@@ -61,7 +62,7 @@ describe('tShirtConfig', () => {
     const wrapper = mount(tShirtConfig)
     var picture = wrapper.vm.tshirt.picture
     await wrapper.vm.addPicture()      // lägga till await (async) 
-    expect(wrapper.vm.tshirt.picture).not.toMatchObject(picture)
+    expect(wrapper.vm.tshirt.picture).not.toEqual(picture)
   })
   test('val av material', () => {
     const wrapper = mount(tShirtConfig)
