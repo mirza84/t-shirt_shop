@@ -1,14 +1,17 @@
-import { shallowMount } from '@vue/test-utils'
-import HelloWorld from '@/components/HelloWorld.vue'
+import { mount } from '@vue/test-utils'
+import App from '@/App.vue'
+import tShirtConfig from '@/components/tShirtConfig.vue'
+import orderForm from '@/components/orderForm.vue'
+//import buyForm from '@/components/buyForm.vue'
 
 describe('App', () => {
   test('does page load', () => {
     const wrapper = mount(App)
-    expect(wrapper.pageLoad()).toBeTruthy()
+    expect(wrapper.isVueInstance).toBeTruthy()
   })
   test('renders template', () => {
     const wrapper = mount(App)
-    expect(wrapper.text()).toMatch('T-Shirt Shop')
+    expect(wrapper.text()).toMatch('Home')    // testa att finna 'Home' på hemsida (finns i App.vue)
   })
 })
 
@@ -31,33 +34,33 @@ describe('tShirtConfig', () => {
   test('textstorlek på t-shirt', () => {
     const wrapper = mount(tShirtConfig)
     wrapper.vm.addTextSize('14')
-    expect(wrapper.vm.tshirt.text.size).toEqual('14')
+    expect(wrapper.vm.tshirt.textSize).toEqual('14')
   })
   test('textfärg på t-shirt', () => {
     const wrapper = mount(tShirtConfig)
     wrapper.vm.addTextColor('red')
-    expect(wrapper.vm.tshirt.text.color).toEqual('red')
+    expect(wrapper.vm.tshirt.textColor).toEqual('red')
   })
   test('teckenstil', () => {
     const wrapper = mount(tShirtConfig)
-    wrapper.vm.fontStyle('I')
-    expect(wrapper.vm.tshirt.text.style).toEqual('I')
+    wrapper.vm.addFontStyle('I')
+    expect(wrapper.vm.tshirt.fontStyle).toEqual('I')
   })
   test('teckentyp', () => {
     const wrapper = mount(tShirtConfig)
-    wrapper.vm.fontType('Calibri')
-    expect(wrapper.vm.tshirt.text.type).toEqual('Calibri')
+    wrapper.vm.addFontType('Calibri')
+    expect(wrapper.vm.tshirt.fontType).toEqual('Calibri')
   })
   test('antal varor', () => {
     const wrapper = mount(tShirtConfig)
     var oldCount = wrapper.vm.tshirt.count
-    wrapper.vm.addItem('T-shirt')
+    wrapper.vm.addItem(1)
     expect(wrapper.vm.tshirt.count).toEqual(oldCount + 1)
   })
   test('ladda upp bild', async () => {
     const wrapper = mount(tShirtConfig)
     var picture = wrapper.vm.tshirt.picture
-    await wrapper.vm.addPicture('mypicture')      // lägga till await (async) 
+    await wrapper.vm.addPicture()      // lägga till await (async) 
     expect(wrapper.vm.tshirt.picture).not.toMatchObject(picture)
   })
   test('val av material', () => {
@@ -69,14 +72,19 @@ describe('tShirtConfig', () => {
     const wrapper = mount(tShirtConfig)
     var stdPrice = wrapper.vm.tshirt.price
     var newPrice = 0
-    if (wrapper.vm.tshirt.text > 0) {      // kräver att man kör testet "text på t-shirt" innan!!
+
+    if (wrapper.vm.tshirt.text != '') {      // om det finns någon text
       newPrice = stdPrice + 50            // 50kr för texten
     } else (newPrice = stdPrice)
 
-    if (wrapper.vm.tshirt.material = 'bomull') {
+    if (wrapper.vm.tshirt.material === 'bomull') {
       newPrice = newPrice + 50            // 50kr för bomull. Polyester standard pris
     }
-    wrapper.vm.showPrice(newPrice)
+    console.log('material ' + wrapper.vm.tshirt.material)
+    console.log('texten på tshirt är ' + wrapper.vm.tshirt.text)
+    console.log('the OLD tshirt price is ' + wrapper.vm.tshirt.price)
+    wrapper.vm.setPrice(newPrice)
+    console.log('the NEW tshirt price is ' + wrapper.vm.tshirt.price)
     expect(wrapper.vm.tshirt.price).toEqual(newPrice)
   })
 })
@@ -90,20 +98,15 @@ describe('orderForm', () => {
       email: "ben@mail.com",
       tshirt: {
         storlek: "L",
-        text: "hero",
+        text: "Hero",
         material: "bomull",
-        pris: 100 + 50 + 50
+        pris: 100 + 50 + 50         //förväntad pris
       }
     }
     wrapper.vm.setFirstName(expectedOrderData.firstName)
     wrapper.vm.setLastName(expectedOrderData.lastName)
     wrapper.vm.setAddress(expectedOrderData.address)
     wrapper.vm.setMail(expectedOrderData.email)
-    wrapper.vm.tshirt.addSize('L')
-    wrapper.vm.tshirt.addText('Sudo')
-    wrapper.vm.tshirt.selectMaterial('bomull')
-    wrapper.vm.tshirt.addSize('L')
-    wrapper.vm.tshirt.showPrice('200')
 
     expect(wrapper.vm.orderData).toEqual(expectedOrderData)  // orderData objekt i orderForm
   })
