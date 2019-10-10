@@ -14,9 +14,6 @@ export default {
           pris: 100 + 50 + 50
         }
       },
-      setTShirt(tShirt) {
-        this.orderData.tShirt = tShirt;
-      },
       setFirstName(firstName) {                         // orderData
         this.orderData.firstName = firstName;
       },

@@ -1,0 +1,42 @@
+SELECT * 
+FROM users, orders, order_rows, products  
+WHERE 
+orders.id = order_rows.order_id
+&& order_rows.product_id = products.id
+&& users.id = orders.id
+&& users.id = 1
+
+
+
+
+
+SELECT orders.id as order_id, name, price as basic_price, text, price + IF(text <> "", 50, 0) as price_with_text
+FROM users, orders, order_rows, products  
+WHERE 
+orders.id = order_rows.order_id
+&& order_rows.product_id = products.id
+&& users.id = orders.user_id
+&& users.id = 1
+
+
+
+
+SELECT SUM(price_with_text), orders.id as order_id, name, price as basic_price, text, price + IF(text <> "", 50, 0) as price_with_text
+FROM users, orders, order_rows, products  
+WHERE 
+orders.id = order_rows.order_id
+&& order_rows.product_id = products.id
+&& users.id = orders.user_id
+&& users.id = 1
+GROUP BY (orders.id)
+
+
+
+
+SELECT *, price + IF(text <> "", 50, 0) as row_price
+FROM users, orders, order_rows, products  
+WHERE 
+orders.id = order_rows.order_id
+&& order_rows.product_id = products.id
+&& users.id = orders.id
+&& users.id = 1

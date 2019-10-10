@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "express-session": "^1.16.2",
+    "mysql": "^2.17.1",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3"
   },

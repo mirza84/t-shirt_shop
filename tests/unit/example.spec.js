@@ -3,7 +3,7 @@ import App from '@/App.vue'
 import tShirtConfig from '@/components/tShirtConfig.vue'
 import orderForm from '@/components/orderForm.vue'
 import { wrap } from 'module'
-//import buyForm from '@/components/buyForm.vue'
+import buyForm from '@/components/buyForm.vue'
 
 describe('App', () => {
   test('does page load', () => {
@@ -114,15 +114,37 @@ describe('orderForm', () => {
 })
 describe('buyForm', () => {
   test('betala order', () => {
-    const wrapper = mount(buyForm)             // buyForm test
-    let paymentMethod = {card, invoice}
+    const wrapper = mount(buyForm)
+    let expectedOrderData = {
+      firstName: "Ben",
+      lastName: "Bensson",
+      address: "Bengatan",
+      email: "ben@mail.com",
+      pnr: "8808084321",
+      payMethod: "caxrd",
+      tshirt: {
+        pris: 100 + 50 + 50         //förväntad pris
+      }
+    }
+    let cardInfo = {
+      cardNumber: "1234567812345678",
+      validDate: "0633",
+      cvc: "123"
+    }
+    wrapper.vm.setPnr(expectedOrderData.pnr)
+    wrapper.vm.setPayMethod(expectedOrderData.payMethod)
 
-    wrapper.vm.addPaymentMethod('card')
-    expect(wrapper.vm.buyForm.paymentMethod).toEqual(paymentMethod.card)  // orderData objekt i orderForm
+    expect(wrapper.vm.orderData.payMethod).toMatch()
 
-    wrapper.vm.addPaymentMethod('invoice')
-    expect(wrapper.vm.buyForm.paymentMethod).toEqual(paymentMethod.invoice)
+    if (wrapper.vm.orderData.payMethod === "faktura") {
+      expect(wrapper.vm.orderData).toEqual(expectedOrderData)  // orderData objekt i orderForm
+    } else if (wrapper.vm.orderData.payMethod === "card") {
+      wrapper.vm.setCardNumber(cardInfo.cardNumber)
+      wrapper.vm.setValidDate(cardInfo.validDate)
+      wrapper.vm.setCvc(cardInfo.cvc)
 
-    wrapper.vm.addPayment(buyForm)
+      expect(wrapper.vm.orderData).toEqual(expectedOrderData)
+      expect(wrapper.vm.cardInfo).toEqual(cardInfo)
+    }
   })
 })
