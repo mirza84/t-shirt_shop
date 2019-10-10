@@ -121,7 +121,7 @@ describe('buyForm', () => {
       address: "Bengatan",
       email: "ben@mail.com",
       pnr: "8808084321",
-      payMethod: "caxrd",
+      payMethod: "card",
       tshirt: {
         pris: 100 + 50 + 50         //förväntad pris
       }
@@ -134,7 +134,7 @@ describe('buyForm', () => {
     wrapper.vm.setPnr(expectedOrderData.pnr)
     wrapper.vm.setPayMethod(expectedOrderData.payMethod)
 
-    expect(wrapper.vm.orderData.payMethod).toMatch()
+    expect(['faktura','card']).toContain(wrapper.vm.orderData.payMethod);
 
     if (wrapper.vm.orderData.payMethod === "faktura") {
       expect(wrapper.vm.orderData).toEqual(expectedOrderData)  // orderData objekt i orderForm
