@@ -118,12 +118,33 @@ let api = [
     request:{
       method: 'post',
       url: '/rest/payment/',
+      body:{
+        type: String,    //card or invoice
+        number: String,
+        expires: String,
+        amount: Number,
+        address: String,
+        phone_nbr: Number      
+    }
+    },
+    response:{
+      statusCode: Number,
+      error: Object
+    }
+  },
+  {
+    description: 'Update payment',
+    request:{
+      method: 'put',
+      url: '/rest/payment/:id',
       params: ['id'],
       body:{
         type: String,    //card or invoice
         number: String,
         expires: String,
-        amount: Number,      
+        amount: Number,
+        address: String,
+        phone_nbr: Number      
     }
     },
     response:{
